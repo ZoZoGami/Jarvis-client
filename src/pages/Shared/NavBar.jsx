@@ -14,8 +14,8 @@ const NavBar = () => {
     <>
       <li><Link to="/" className="rounded-lg bg-[#fa9e70] font-bold  hover:bg-orange-500 hover:text-white">TODO</Link></li>
       <li><Link to="/routine" className="rounded-lg bg-[#fa9e70] font-bold  hover:bg-orange-500 hover:text-white">Routine</Link></li>
-      <li><Link to="/stickynotes" className="rounded-lg bg-[#fa9e70] font-bold  hover:bg-orange-500 hover:text-white">Academic</Link></li>
-      <li><Link to="/our-team" className="rounded-lg bg-[#fa9e70] font-bold  hover:bg-orange-500 hover:text-white">Link</Link></li>
+      <li><Link to="/academics" className="rounded-lg bg-[#fa9e70] font-bold  hover:bg-orange-500 hover:text-white">Academic</Link></li>
+      <li><Link to="/link" className="rounded-lg bg-[#fa9e70] font-bold  hover:bg-orange-500 hover:text-white">Link</Link></li>
       <li><Link to="/courses" className="rounded-lg bg-[#fa9e70] font-bold  hover:bg-orange-500 hover:text-white">Others</Link></li>
     </>
   );

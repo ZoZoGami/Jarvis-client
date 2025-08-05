@@ -1,134 +1,96 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-
-// const Routine = () => {
-//   const [routine, setRoutine] = useState([]);
-
-// //   useEffect(() => {
-// //     // Fetch routine from backend API
-// //     axios.get('/api/routines')
-// //       .then(response => setRoutine(response.data))
-// //       .catch(error => console.log(error));
-// //   }, []);
-
-//   return (
-//     <div className='pt-24'>
-//       <h2>Your Routine</h2>
-//       <table>
-//         <thead>
-//           <tr>
-//             <th>Course</th>
-//             <th>Room</th>
-//             <th>Day</th>
-//             <th>Time</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {routine.map((item) => (
-//             <tr key={item._id}>
-//               <td>{item.courseTitle}</td>
-//               <td>{item.room}</td>
-//               <td>{item.day}</td>
-//               <td>{item.time}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default Routine;
 import React from 'react';
 
 const Routine = () => {
   return (
-    <div className='pt-24 px-8 bg-gray-900 text-white'>
+    <div className='pt-24 px-8 bg-[#f6e7de] text-gray-800'>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800">Class Routine</h1>
+      </div>
       
-      <div className="mt-8">
-        <table className="min-w-full bg-gray-800 border-collapse">
+      <div className="mt-8 overflow-x-auto">
+        <table className="min-w-full bg-white border-collapse rounded-lg shadow-md">
           <thead>
-            <tr className="border-b bg-gray-700">
-              <th className="px-4 py-2 text-left text-gray-400">Day</th>
-              <th className="px-4 py-2 text-left text-gray-400">8:00am</th>
-              <th className="px-4 py-2 text-left text-gray-400">9:30am</th>
-              <th className="px-4 py-2 text-left text-gray-400">11:00am</th>
-              <th className="px-4 py-2 text-left text-gray-400">12:30pm</th>
-              <th className="px-4 py-2 text-left text-gray-400">2:00pm</th>
-              <th className="px-4 py-2 text-left text-gray-400">3:30pm</th>
-              <th className="px-4 py-2 text-left text-gray-400">5:00pm</th>
+            <tr className="border-b bg-orange-500 text-white">
+              <th className="px-6 py-3 text-left font-medium">Day</th>
+              <th className="px-6 py-3 text-left font-medium">8:00am</th>
+              <th className="px-6 py-3 text-left font-medium">9:30am</th>
+              <th className="px-6 py-3 text-left font-medium">11:00am</th>
+              <th className="px-6 py-3 text-left font-medium">12:30pm</th>
+              <th className="px-6 py-3 text-left font-medium">2:00pm</th>
+              <th className="px-6 py-3 text-left font-medium">3:30pm</th>
+              <th className="px-6 py-3 text-left font-medium">5:00pm</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-gray-900">
-              <td className="px-4 py-2 text-gray-300">Sunday</td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
+            <tr className="border-b hover:bg-orange-50">
+              <td className="px-6 py-4 font-medium">Sunday</td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
             </tr>
-            <tr className="bg-gray-800">
-              <td className="px-4 py-2 text-gray-300">Monday</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
+            <tr className="border-b hover:bg-orange-50">
+              <td className="px-6 py-4 font-medium">Monday</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
             </tr>
-            <tr className="bg-gray-900">
-              <td className="px-4 py-2 text-gray-300">Tuesday</td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
+            <tr className="border-b hover:bg-orange-50">
+              <td className="px-6 py-4 font-medium">Tuesday</td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
             </tr>
-            <tr className="bg-gray-800">
-              <td className="px-4 py-2 text-gray-300">Wednesday</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
+            <tr className="border-b hover:bg-orange-50">
+              <td className="px-6 py-4 font-medium">Wednesday</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
             </tr>
-            <tr className="bg-gray-900">
-              <td className="px-4 py-2 text-gray-300">Thursday</td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
+            <tr className="border-b hover:bg-orange-50">
+              <td className="px-6 py-4 font-medium">Thursday</td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
             </tr>
-            <tr className="bg-gray-800">
-              <td className="px-4 py-2 text-gray-300">Friday</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
+            <tr className="border-b hover:bg-orange-50">
+              <td className="px-6 py-4 font-medium">Friday</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
             </tr>
-            <tr className="bg-gray-900">
-              <td className="px-4 py-2 text-gray-300">Saturday</td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
-              <td className="px-4 py-2 text-gray-300"></td>
-              <td className="px-4 py-2 text-gray-300">Cse470(7H-28C)</td>
+            <tr className="hover:bg-orange-50">
+              <td className="px-6 py-4 font-medium">Saturday</td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
+              <td className="px-6 py-4"></td>
+              <td className="px-6 py-4">Cse470(7H-28C)</td>
             </tr>
           </tbody>
         </table>
@@ -138,4 +100,3 @@ const Routine = () => {
 };
 
 export default Routine;
-

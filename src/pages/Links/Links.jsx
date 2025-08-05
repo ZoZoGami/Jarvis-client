@@ -1,116 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import { MdAddCircle } from "react-icons/md";
 
-const Todo = () => {
-  const [todos, setTodos] = useState([]);
+const Links = () => {
+  const [links, setLinks] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [currentTodo, setCurrentTodo] = useState({
+  const [newLink, setNewLink] = useState({
     email: '',
-    title: '',
-    todo: '',
-    priority: 'medium'
+    courseCode: '',
+    link: '',
+    description: ''
   });
-  const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch all todos
-  const fetchTodos = async () => {
+  // Fetch all links
+  const fetchLinks = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/todos');
+      const response = await fetch('http://localhost:5000/api/links');
       const data = await response.json();
-      setTodos(data);
+      setLinks(data);
     } catch (error) {
-      console.error('Error fetching todos:', error);
+      console.error('Error fetching links:', error);
     }
   };
 
   useEffect(() => {
-    fetchTodos();
+    fetchLinks();
   }, []);
 
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCurrentTodo({
-      ...currentTodo,
+    setNewLink({
+      ...newLink,
       [name]: value
     });
   };
 
-  // Create or update todo
+  // Create new link
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = isEditing 
-      ? `http://localhost:5000/api/todos/${currentTodo._id}`
-      : 'http://localhost:5000/api/todos';
-    const method = isEditing ? 'PATCH' : 'POST';
-
     try {
-      const response = await fetch(url, {
-        method,
+      const response = await fetch('http://localhost:5000/api/links', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(currentTodo),
+        body: JSON.stringify(newLink),
       });
       const data = await response.json();
-      
-      if (isEditing) {
-        setTodos(todos.map(todo => todo._id === currentTodo._id ? data : todo));
-      } else {
-        setTodos([...todos, data]);
-      }
-      
+      setLinks([...links, data]);
       setShowModal(false);
-      resetForm();
+      setNewLink({
+        email: '',
+        courseCode: '',
+        link: '',
+        description: ''
+      });
     } catch (error) {
-      console.error('Error saving todo:', error);
+      console.error('Error saving link:', error);
     }
   };
 
-  // Delete todo
+  // Delete link
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/todos/${id}`, {
+      await fetch(`http://localhost:5000/api/links/${id}`, {
         method: 'DELETE'
       });
-      setTodos(todos.filter(todo => todo._id !== id));
+      setLinks(links.filter(link => link._id !== id));
     } catch (error) {
-      console.error('Error deleting todo:', error);
-    }
-  };
-
-  // Edit todo
-  const handleEdit = (todo) => {
-    setCurrentTodo(todo);
-    setIsEditing(true);
-    setShowModal(true);
-  };
-
-  // Reset form
-  const resetForm = () => {
-    setCurrentTodo({
-      email: '',
-      title: '',
-      todo: '',
-      priority: 'medium'
-    });
-    setIsEditing(false);
-  };
-
-  // Priority badge color
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      console.error('Error deleting link:', error);
     }
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">JARVIS Todo List</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Course Links</h1>
         <button
           onClick={() => setShowModal(true)}
           className="text-4xl hover:text-orange-600 text-orange-500"
@@ -120,28 +85,27 @@ const Todo = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {todos.map((todo) => (
-          <div key={todo._id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        {links.map((link) => (
+          <div key={link._id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
             <div className="p-6">
-              <div className="flex justify-between items-start">
-                <h2 className="text-xl font-semibold text-gray-800">{todo.title}</h2>
-                <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getPriorityColor(todo.priority)}`}>
-                  {todo.priority}
-                </span>
-              </div>
-              <p className="mt-2 text-gray-600">{todo.todo}</p>
+              <h2 className="text-xl font-semibold text-gray-800">{link.courseCode}</h2>
+              {link.description && (
+                <p className="mt-2 text-gray-600">{link.description}</p>
+              )}
+              <a
+                href={link.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 text-blue-600 hover:text-blue-800 break-words"
+              >
+                {link.link}
+              </a>
               <p className="mt-3 text-sm text-gray-500">
-                {new Date(todo.createdAt).toLocaleString()}
+                {new Date(link.createdAt).toLocaleString()}
               </p>
-              <div className="mt-4 flex justify-end space-x-2">
+              <div className="mt-4 flex justify-end">
                 <button
-                  onClick={() => handleEdit(todo)}
-                  className="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded-md text-sm transition-colors"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(todo._id)}
+                  onClick={() => handleDelete(link._id)}
                   className="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded-md text-sm transition-colors"
                 >
                   Delete
@@ -152,16 +116,14 @@ const Todo = () => {
         ))}
       </div>
 
-      {/* Add/Edit Todo Modal */}
+      {/* Add Link Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-[#f6e7de] rounded-lg shadow-xl w-full max-w-md">
             <div className="flex justify-between items-center border-b p-4">
-              <h3 className="text-lg font-semibold text-gray-800">
-                {isEditing ? 'Edit Todo' : 'Add New Todo'}
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-800">Add New Link</h3>
               <button
-                onClick={() => { setShowModal(false); resetForm(); }}
+                onClick={() => setShowModal(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -178,60 +140,57 @@ const Todo = () => {
                   type="email"
                   id="email"
                   name="email"
-                  value={currentTodo.email}
+                  value={newLink.email}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                  Title
+                <label htmlFor="courseCode" className="block text-sm font-medium text-gray-700 mb-1">
+                  Course Code
                 </label>
                 <input
                   type="text"
-                  id="title"
-                  name="title"
-                  value={currentTodo.title}
+                  id="courseCode"
+                  name="courseCode"
+                  value={newLink.courseCode}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="todo" className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                  Description (Optional)
                 </label>
-                <textarea
-                  id="todo"
-                  name="todo"
-                  rows="3"
-                  value={currentTodo.todo}
+                <input
+                  type="text"
+                  id="description"
+                  name="description"
+                  value={newLink.description}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="mb-6">
+                <label htmlFor="link" className="block text-sm font-medium text-gray-700 mb-1">
+                  Link URL
+                </label>
+                <input
+                  type="url"
+                  id="link"
+                  name="link"
+                  value={newLink.link}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-              </div>
-              <div className="mb-6">
-                <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
-                  Priority
-                </label>
-                <select
-                  id="priority"
-                  name="priority"
-                  value={currentTodo.priority}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
               </div>
               <div className="flex justify-end space-x-3">
                 <button
                   type="button"
-                  onClick={() => { setShowModal(false); resetForm(); }}
+                  onClick={() => setShowModal(false)}
                   className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   Cancel
@@ -240,7 +199,7 @@ const Todo = () => {
                   type="submit"
                   className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
                 >
-                  {isEditing ? 'Update' : 'Save'}
+                  Save
                 </button>
               </div>
             </form>
@@ -251,4 +210,4 @@ const Todo = () => {
   );
 };
 
-export default Todo;
+export default Links;
