@@ -12,7 +12,6 @@ const Todo = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch all todos
   const fetchTodos = async () => {
     try {
       const response = await fetch('http://localhost:5000/api/todos');
@@ -27,7 +26,6 @@ const Todo = () => {
     fetchTodos();
   }, []);
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentTodo({
@@ -36,10 +34,9 @@ const Todo = () => {
     });
   };
 
-  // Create or update todo
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = isEditing 
+    const url = isEditing
       ? `http://localhost:5000/api/todos/${currentTodo._id}`
       : 'http://localhost:5000/api/todos';
     const method = isEditing ? 'PATCH' : 'POST';
@@ -53,13 +50,13 @@ const Todo = () => {
         body: JSON.stringify(currentTodo),
       });
       const data = await response.json();
-      
+
       if (isEditing) {
         setTodos(todos.map(todo => todo._id === currentTodo._id ? data : todo));
       } else {
         setTodos([...todos, data]);
       }
-      
+
       setShowModal(false);
       resetForm();
     } catch (error) {
@@ -67,7 +64,6 @@ const Todo = () => {
     }
   };
 
-  // Delete todo
   const handleDelete = async (id) => {
     try {
       await fetch(`http://localhost:5000/api/todos/${id}`, {
@@ -79,14 +75,15 @@ const Todo = () => {
     }
   };
 
-  // Edit todo
   const handleEdit = (todo) => {
-    setCurrentTodo(todo);
+    setCurrentTodo({
+      ...todo,
+      title: todo.title || ''
+    });
     setIsEditing(true);
     setShowModal(true);
   };
 
-  // Reset form
   const resetForm = () => {
     setCurrentTodo({
       email: '',
@@ -97,7 +94,6 @@ const Todo = () => {
     setIsEditing(false);
   };
 
-  // Priority badge color
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800';
@@ -124,7 +120,9 @@ const Todo = () => {
           <div key={todo._id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
             <div className="p-6">
               <div className="flex justify-between items-start">
-                <h2 className="text-xl font-semibold text-gray-800">{todo.title}</h2>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {todo.title || 'Untitled Todo'}
+                </h2>
                 <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getPriorityColor(todo.priority)}`}>
                   {todo.priority}
                 </span>
@@ -152,7 +150,7 @@ const Todo = () => {
         ))}
       </div>
 
-      {/* Add/Edit Todo Modal */}
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-[#f6e7de] rounded-lg shadow-xl w-full max-w-md">
