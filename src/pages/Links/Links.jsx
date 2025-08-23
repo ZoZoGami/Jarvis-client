@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { MdAddCircle } from "react-icons/md";
+import useAuth from "../../hooks/useAuth";
 
 const Links = () => {
+  const { user } = useAuth();
+  const userEmail = user?.email;
+
   const [links, setLinks] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newLink, setNewLink] = useState({
-    email: "",
     courseCode: "",
     link: "",
     description: "",
   });
 
-  // Fetch all links
+  // Fetch links for the current user only
   const fetchLinks = async () => {
+    if (!userEmail) return;
+    
     try {
-      const response = await fetch("http://localhost:5000/api/links");
+      const response = await fetch(`http://localhost:5000/api/links/user/${userEmail}`);
       const data = await response.json();
       setLinks(data);
     } catch (error) {
@@ -24,7 +29,7 @@ const Links = () => {
 
   useEffect(() => {
     fetchLinks();
-  }, []);
+  }, [userEmail]);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -38,19 +43,29 @@ const Links = () => {
   // Create new link
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!userEmail) {
+      alert("Please log in to add links!");
+      return;
+    }
+
     try {
+      const linkToSave = {
+        ...newLink,
+        email: userEmail, // Automatically use authenticated user's email
+      };
+
       const response = await fetch("http://localhost:5000/api/links", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newLink),
+        body: JSON.stringify(linkToSave),
       });
       const data = await response.json();
       setLinks([...links, data]);
       setShowModal(false);
       setNewLink({
-        email: "",
         courseCode: "",
         link: "",
         description: "",
@@ -84,41 +99,59 @@ const Links = () => {
         </button>
       </div>
 
+      {/* Welcome message */}
+      {userEmail && (
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+          <p className="text-blue-800">
+            Welcome, <span className="font-semibold">{userEmail}</span>
+          </p>
+          <p className="text-sm text-blue-600">
+            You have {links.length} link{links.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {links.map((link) => (
-          <div
-            key={link._id}
-            className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200"
-          >
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-800">
-                {link.courseCode}
-              </h2>
-              {link.description && (
-                <p className="mt-2 text-gray-600">{link.description}</p>
-              )}
-              <a
-                href={link.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 text-blue-600 hover:text-blue-800 break-words"
-              >
-                {link.link}
-              </a>
-              <p className="mt-3 text-sm text-gray-500">
-                {new Date(link.createdAt).toLocaleString()}
-              </p>
-              <div className="mt-4 flex justify-end">
-                <button
-                  onClick={() => handleDelete(link._id)}
-                  className="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded-md text-sm transition-colors"
+        {links.length === 0 ? (
+          <div className="col-span-full text-center py-12">
+            <p className="text-gray-500 text-lg">No links yet. Add your first link!</p>
+          </div>
+        ) : (
+          links.map((link) => (
+            <div
+              key={link._id}
+              className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200"
+            >
+              <div className="p-6">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {link.courseCode}
+                </h2>
+                {link.description && (
+                  <p className="mt-2 text-gray-600">{link.description}</p>
+                )}
+                <a
+                  href={link.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 text-blue-600 hover:text-blue-800 break-words"
                 >
-                  Delete
-                </button>
+                  {link.link}
+                </a>
+                <p className="mt-3 text-sm text-gray-500">
+                  {new Date(link.createdAt).toLocaleString()}
+                </p>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => handleDelete(link._id)}
+                    className="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded-md text-sm transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Add Link Modal */}
@@ -150,29 +183,13 @@ const Links = () => {
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-4">
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={newLink.email}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
+              {/* Removed email input field */}
               <div className="mb-4">
                 <label
                   htmlFor="courseCode"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Course Code
+                  Course Code *
                 </label>
                 <input
                   type="text"
@@ -182,6 +199,7 @@ const Links = () => {
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                  placeholder="e.g., CS101"
                 />
               </div>
               <div className="mb-4">
@@ -198,6 +216,7 @@ const Links = () => {
                   value={newLink.description}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Course materials, assignments, etc."
                 />
               </div>
               <div className="mb-6">
@@ -205,7 +224,7 @@ const Links = () => {
                   htmlFor="link"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Link URL
+                  Link URL *
                 </label>
                 <input
                   type="url"
@@ -215,6 +234,7 @@ const Links = () => {
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                  placeholder="https://example.com/course-materials"
                 />
               </div>
               <div className="flex justify-end space-x-3">

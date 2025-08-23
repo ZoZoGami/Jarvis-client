@@ -26,7 +26,8 @@ const Login = () => {
         icon: "success",
         confirmButtonColor: "#f97316",
       });
-      navigate(from, { replace: true });
+      // navigate(from, { replace: true });
+      navigate("/", { replace: true })
     });
   };
 

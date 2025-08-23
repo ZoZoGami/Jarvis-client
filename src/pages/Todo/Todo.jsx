@@ -2,33 +2,40 @@ import React, { useState, useEffect } from "react";
 import { MdAddCircle } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useAuth from "../../hooks/useAuth";
+import DailyReminder from "./DailyReminder";
 
 const Todo = () => {
+  const { user } = useAuth();
+  const userEmail = user?.email;
+  const userName = user?.displayName;
+
   const [todos, setTodos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentTodo, setCurrentTodo] = useState({
-    email: "",
     title: "",
     todo: "",
     priority: "medium",
   });
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch todos
+  // Fetch todos for the current user only
   const fetchTodos = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/api/todos");
-      const data = await response.json();
-      setTodos(data);
-    } catch (error) {
-      console.error("Error fetching todos:", error);
-      toast.error("Failed to fetch todos!");
-    }
-  };
+  if (!userEmail) return;
+  
+  try {
+    const response = await fetch(`http://localhost:5000/api/todos/user/${userEmail}`);
+    const data = await response.json();
+    setTodos(data);
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    toast.error("Failed to fetch todos!");
+  }
+};
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [userEmail]); // Refetch when userEmail changes
 
   // Handle form input
   const handleInputChange = (e) => {
@@ -42,10 +49,16 @@ const Todo = () => {
   // Add / Update Todo
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!userEmail) {
+      toast.error("Please log in to create todos!");
+      return;
+    }
 
-    // Ensure title is not empty
+    // Ensure title is not empty and include user email
     const todoToSave = {
       ...currentTodo,
+      email: userEmail, // Automatically use authenticated user's email
       title: currentTodo.title.trim() || "Untitled Todo",
     };
 
@@ -109,7 +122,6 @@ const Todo = () => {
   // Reset form
   const resetForm = () => {
     setCurrentTodo({
-      email: "",
       title: "",
       todo: "",
       priority: "medium",
@@ -133,6 +145,7 @@ const Todo = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+        <DailyReminder />
       <ToastContainer />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800">JARVIS Todo List</h1>
@@ -143,50 +156,69 @@ const Todo = () => {
           <MdAddCircle />
         </button>
       </div>
+      
+
+      {/* Welcome message */}
+      {userEmail && (
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+          <p className="text-blue-800">
+            Welcome, <span className="font-semibold">{userName}</span>
+          </p>
+          <p className="text-sm text-blue-600">
+            You have {todos.length} todo{todos.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+      )}
 
       {/* Todo List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {todos.map((todo) => (
-          <div
-            key={todo._id}
-            className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200"
-          >
-            <div className="p-6">
-              <div className="flex justify-between items-start">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  {todo.title?.trim() || "Untitled Todo"}
-                </h2>
-                <span
-                  className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getPriorityColor(
-                    todo.priority
-                  )}`}
-                >
-                  {todo.priority}
-                </span>
-              </div>
-              <p className="mt-2 text-gray-600">{todo.todo}</p>
-              <p className="mt-3 text-sm text-gray-500">
-                {todo.createdAt
-                  ? new Date(todo.createdAt).toLocaleString()
-                  : "No date"}
-              </p>
-              <div className="mt-4 flex justify-end space-x-2">
-                <button
-                  onClick={() => handleEdit(todo)}
-                  className="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded-md text-sm transition-colors"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(todo._id)}
-                  className="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded-md text-sm transition-colors"
-                >
-                  Delete
-                </button>
+        {todos.length === 0 ? (
+          <div className="col-span-full text-center py-12">
+            <p className="text-gray-500 text-lg">No todos yet. Add your first todo!</p>
+          </div>
+        ) : (
+          todos.map((todo) => (
+            <div
+              key={todo._id}
+              className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    {todo.title?.trim() || "Untitled Todo"}
+                  </h2>
+                  <span
+                    className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${getPriorityColor(
+                      todo.priority
+                    )}`}
+                  >
+                    {todo.priority}
+                  </span>
+                </div>
+                <p className="mt-2 text-gray-600">{todo.todo}</p>
+                <p className="mt-3 text-sm text-gray-500">
+                  {todo.createdAt
+                    ? new Date(todo.createdAt).toLocaleString()
+                    : "No date"}
+                </p>
+                <div className="mt-4 flex justify-end space-x-2">
+                  <button
+                    onClick={() => handleEdit(todo)}
+                    className="text-blue-600 hover:text-blue-800 border border-blue-600 hover:border-blue-800 px-3 py-1 rounded-md text-sm transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(todo._id)}
+                    className="text-red-600 hover:text-red-800 border border-red-600 hover:border-red-800 px-3 py-1 rounded-md text-sm transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Modal */}
@@ -221,29 +253,13 @@ const Todo = () => {
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-4">
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={currentTodo.email}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
+              {/* Removed email input field */}
               <div className="mb-4">
                 <label
                   htmlFor="title"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Title
+                  Title *
                 </label>
                 <input
                   type="text"
@@ -253,6 +269,7 @@ const Todo = () => {
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                  placeholder="Enter todo title"
                 />
               </div>
               <div className="mb-4">
@@ -260,7 +277,7 @@ const Todo = () => {
                   htmlFor="todo"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Description
+                  Description *
                 </label>
                 <textarea
                   id="todo"
@@ -270,6 +287,7 @@ const Todo = () => {
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                  placeholder="Enter todo description"
                 />
               </div>
               <div className="mb-6">

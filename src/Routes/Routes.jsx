@@ -10,21 +10,21 @@ import Links from "../pages/Links/Links";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import Academics from "../pages/Academics/Academics";
 import LottieError from "../pages/ErrorPage/lottieError";
-
+import PrivateRoute from "./PrivateRoute";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root></Root>,
-    // errorElement:<ErrorPage></ErrorPage>,
-    errorElement: <LottieError></LottieError>,
+    element: <Root />,   // Root is always available
+    errorElement: <LottieError />,
     children: [
-      { path: "/", element: <Todo></Todo> },
-      { path: "/routine", element: <Routine></Routine> },
-      { path: "/link", element: <Links></Links> },
-      { path: "/academics", element: <Academics></Academics> },
-      { path: "login", element: <Login /> },
-      { path: "signup", element: <SignUp /> },
-      { path: "/courses", element: <ErrorPage></ErrorPage> },
+      { path: "/", element: <PrivateRoute><Todo /></PrivateRoute> },
+      { path: "/routine", element: <PrivateRoute><Routine /></PrivateRoute> },
+      { path: "/link", element: <PrivateRoute><Links /></PrivateRoute> },
+      { path: "/academics", element: <PrivateRoute><Academics /></PrivateRoute> },
+      { path: "/login", element: <Login /> },    // public
+      { path: "/signup", element: <SignUp /> },  // public
+      { path: "/courses", element: <ErrorPage /> },
     ],
   },
 ]);
+
