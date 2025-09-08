@@ -45,10 +45,10 @@ const NavBar = () => {
       </li>
       <li>
         <Link
-          to="/courses"
+          to="/reminders"
           className="rounded-lg bg-orange-400 font-semibold  hover:bg-orange-500 hover:text-white"
         >
-          Others
+          Reminders
         </Link>
       </li>
     </>

@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuth from "../../hooks/useAuth";
 import DailyReminder from "./DailyReminder";
+import Reminders from "../Reminders/Reminders";
 
 const Todo = () => {
   const { user } = useAuth();
@@ -144,11 +145,22 @@ const Todo = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-        <DailyReminder />
+    <div className=" container mx-auto px-4 py-8">
+        {/* Welcome message */}
+        {userEmail && (
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+            <p className="text-blue-800">
+              Welcome, <span className="font-semibold">{userName}</span>
+            </p>
+            <p className="text-sm text-blue-600">
+              You have {todos.length} todo{todos.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+        )}
+        
       <ToastContainer />
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">JARVIS Todo List</h1>
+        <h1 className="text-3xl font-bold text-gray-800">✍️Todo List</h1>
         <button
           onClick={() => setShowModal(true)}
           className="text-4xl hover:text-orange-600 text-orange-500"
@@ -158,17 +170,6 @@ const Todo = () => {
       </div>
       
 
-      {/* Welcome message */}
-      {userEmail && (
-        <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-blue-800">
-            Welcome, <span className="font-semibold">{userName}</span>
-          </p>
-          <p className="text-sm text-blue-600">
-            You have {todos.length} todo{todos.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-      )}
 
       {/* Todo List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -331,6 +332,12 @@ const Todo = () => {
           </div>
         </div>
       )}
+      <div className="mt-10">
+        <DailyReminder />
+      </div>
+      <div className="mt-10">
+        <Reminders />
+      </div>
     </div>
   );
 };
