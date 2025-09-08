@@ -1,45 +1,46 @@
-
 import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useNavigate } from "react-router-dom";
 
-
 const SocialLogin = () => {
-    const { googleSignIn } = useAuth();
-    const axiosPublic = useAxiosPublic();
-    const navigate = useNavigate();
+  const { googleSignIn } = useAuth();
+  const axiosPublic = useAxiosPublic();
+  const navigate = useNavigate();
 
-    const handleGoogleSignIn = () => {
-        googleSignIn()
-            .then(result => {
-                console.log(result.user);
-                const userInfo = {
-                    email: result.user?.email,
-                    name: result.user?.displayName
-                }
-                axiosPublic.post('/users', userInfo)
-                    .then(res => {
-                        console.log(res.data);
-                        navigate(-1);
-                    })
-            })
-    }
+  const handleGoogleSignIn = () => {
+    googleSignIn().then((result) => {
+      console.log(result.user);
+      const userInfo = {
+        email: result.user?.email,
+        name: result.user?.displayName,
+      };
+      axiosPublic.post("/users", userInfo).then((res) => {
+        console.log(res.data);
+        navigate('/', { replace: true });
+      });
+    });
+  };
 
-    return (
-        <div className="p-8">
-            <div className="divider"></div>
-            <div>
-                <button
-                    onClick={handleGoogleSignIn}
-                    type="button"
-                    className="w-full mt-4 flex items-center justify-center gap-2 border p-2 rounded-lg hover:bg-gray-100 transition"
-                >
-                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" className="h-5 w-5" />
-                    <span>Login/Signup with Google</span>
-                </button>
-            </div>
-        </div>
-    );
+  return (
+    <div className="mt-2">
+      <div className="flex items-center gap-2"></div>
+
+      <button
+        onClick={handleGoogleSignIn}
+        type="button"
+        className="w-full mt-2 flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-lg shadow-sm bg-white hover:bg-orange-50 hover:border-orange-400 transition duration-200"
+      >
+        <img
+          src="https://www.svgrepo.com/show/475656/google-color.svg"
+          alt="Google Logo"
+          className="h-5 w-5"
+        />
+        <span className="text-sm font-medium text-gray-700">
+          Sign in with Google
+        </span>
+      </button>
+    </div>
+  );
 };
 
 export default SocialLogin;
