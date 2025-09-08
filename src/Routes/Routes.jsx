@@ -9,19 +9,24 @@ import Todo from "../pages/Todo/Todo";
 import Links from "../pages/Links/Links";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import Academics from "../pages/Academics/Academics";
-
+import LottieError from "../pages/ErrorPage/lottieError";
+import PrivateRoute from "./PrivateRoute";
+import Reminders from "../pages/Reminders/Reminders";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root></Root>,
-    errorElement:<ErrorPage></ErrorPage>,
+    element: <Root />,   // Root is always available
+    errorElement: <LottieError />,
     children: [
-      { path: "/", element: <Todo></Todo> },
-      { path: "/routine", element: <Routine></Routine> },
-      { path: "/link", element: <Links></Links> },
-      { path: "/academics", element: <Academics></Academics> },
-      { path: "login", element: <Login/> },
-      { path: "signup", element: <SignUp /> }
+      { path: "/", element: <PrivateRoute><Todo /></PrivateRoute> },
+      { path: "/routine", element: <PrivateRoute><Routine /></PrivateRoute> },
+      { path: "/link", element: <PrivateRoute><Links /></PrivateRoute> },
+      { path: "/academics", element: <PrivateRoute><Academics /></PrivateRoute> },
+      { path: "/reminders", element: <PrivateRoute><Reminders></Reminders></PrivateRoute> },
+      { path: "/login", element: <Login /> },    // public
+      { path: "/signup", element: <SignUp /> },  // public
+      { path: "/courses", element: <ErrorPage /> },
     ],
   },
 ]);
+
