@@ -79,7 +79,7 @@ const DailyReminder = () => {
     const now = new Date();
     const diffMs = classTime - now;
     
-    if (diffMs <= 0) return "Ongoing";
+    if (diffMs <= 0 ) return "Ongoing";
     
     const hours = Math.floor(diffMs / (1000 * 60 * 60));
     const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
@@ -160,7 +160,7 @@ const DailyReminder = () => {
                       ? "bg-blue-100 text-blue-800" 
                       : "bg-green-100 text-green-800"
                   }`}>
-                    {classItem.isUpcoming ? "Upcoming" : "Ongoing/Completed"}
+                    {classItem.isUpcoming ? "Upcoming" : "Completed"}
                   </div>
                   {classItem.isUpcoming && (
                     <p className="text-xs text-gray-500 mt-1">
